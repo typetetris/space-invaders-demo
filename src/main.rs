@@ -4,7 +4,6 @@ use bullet::BulletsPlugin;
 use collision::CollisionPlugin;
 use detect_win_or_loss::DetectWinOrLossPlugin;
 use game::GamePlugin;
-use gamepad_wait::GamepadWaitPlugin;
 use load_assets::LoadAssetsPlugin;
 use player::{PlayerPlugin, PlayerShot};
 use splash::SplashScreenPlugin;
@@ -22,7 +21,6 @@ mod bullet;
 mod collision;
 mod detect_win_or_loss;
 mod game;
-mod gamepad_wait;
 mod load_assets;
 mod player;
 mod splash;
@@ -32,7 +30,6 @@ mod start_game_on_button_press;
 enum GameStates {
     #[default]
     Startup,
-    WaitForGamepad,
     Splash,
     Game,
     End,
@@ -61,7 +58,6 @@ fn main() {
         .add_event::<PlayerShot>()
         .add_plugins((
             LoadAssetsPlugin,
-            GamepadWaitPlugin,
             SplashScreenPlugin,
             GamePlugin,
             AlienPlugin,

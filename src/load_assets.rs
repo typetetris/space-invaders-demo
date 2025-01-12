@@ -66,5 +66,5 @@ fn load_assets(
     };
 
     cmd.insert_resource(assets);
-    game_state.set(GameStates::WaitForGamepad);
+    game_state.set(GameStates::Splash);
 }
