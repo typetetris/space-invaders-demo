@@ -1,2 +1,8 @@
 /target
 .direnv/
+
+# Files from merge conflicts
+*_BACKUP_*
+*_LOCAL_*
+*_REMOTE_*
+*_BASE_*
