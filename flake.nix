@@ -16,6 +16,10 @@
         xorg.libXrandr
         libxkbcommon
         wayland 
+
+        # For lld linker
+        clang
+        lld
       ];
       LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
     };
