@@ -4,6 +4,7 @@ use bullet::BulletsPlugin;
 use collision::CollisionPlugin;
 use detect_win::DetectWinPlugin;
 use game::GamePlugin;
+use gamepad_wait::GamepadWaitPlugin;
 use load_assets::LoadAssetsPlugin;
 use player::{PlayerPlugin, PlayerShot};
 
@@ -20,6 +21,7 @@ mod bullet;
 mod collision;
 mod detect_win;
 mod game;
+mod gamepad_wait;
 mod load_assets;
 mod player;
 
@@ -57,6 +59,7 @@ fn main() {
         .add_plugins((
             LoadAssetsPlugin,
             GamePlugin,
+            GamepadWaitPlugin,
             AlienPlugin,
             PlayerPlugin,
             BulletsPlugin,
@@ -66,4 +69,11 @@ fn main() {
             DetectWinPlugin,
         ))
         .run();
+}
+
+const TEXT_COLOR: Color = Color::srgb(0.8, 0.8, 0.8);
+fn despawn_component_type<T: Component>(to_despawn: Query<Entity, With<T>>, mut cmd: Commands) {
+    for entity in &to_despawn {
+        cmd.entity(entity).despawn_recursive();
+    }
 }
