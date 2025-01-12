@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{load_assets, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
+use crate::{load_assets, GameStates, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
 
 pub struct PlayerPlugin;
 
@@ -9,8 +9,8 @@ const PLAYER_HEIGHT: f32 = 9f32;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_player);
-        app.add_systems(Update, move_player);
+        app.add_systems(OnEnter(GameStates::Game), setup_player);
+        app.add_systems(Update, move_player.run_if(in_state(GameStates::Game)));
     }
 }
 

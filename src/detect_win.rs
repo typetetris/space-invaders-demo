@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{alien::Alien, load_assets};
+use crate::{alien::Alien, load_assets, GameStates};
 
 pub struct DetectWinPlugin;
 
@@ -9,7 +9,7 @@ struct WinSound;
 
 impl Plugin for DetectWinPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, detect_win);
+        app.add_systems(Update, detect_win.run_if(in_state(GameStates::Game)));
     }
 }
 

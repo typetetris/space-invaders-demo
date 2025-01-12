@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::load_assets::Assets;
-use crate::{PADDING, WORLD_HEIGHT, WORLD_WIDTH};
+use crate::{GameStates, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
 
 const ALIEN_HEIGHT: f32 = 9f32;
 const ALIEN_WIDTH: f32 = 9f32;
@@ -41,8 +41,8 @@ enum AlienMovementDirection {
 
 impl Plugin for AlienPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_aliens);
-        app.add_systems(Update, move_aliens);
+        app.add_systems(OnEnter(GameStates::Game), setup_aliens);
+        app.add_systems(Update, move_aliens.run_if(in_state(GameStates::Game)));
     }
 }
 

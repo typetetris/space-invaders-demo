@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::alien::Alien;
 use crate::bullet::Bullet;
+use crate::GameStates;
 
 pub struct CollisionPlugin;
 
@@ -9,7 +10,7 @@ const COLLISION_DIST: f32 = 6f32;
 
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, detect_collision);
+        app.add_systems(Update, detect_collision.run_if(in_state(GameStates::Game)));
     }
 }
 

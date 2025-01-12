@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{load_assets, player::PlayerShot, WORLD_HEIGHT};
+use crate::{load_assets, player::PlayerShot, GameStates, WORLD_HEIGHT};
 
 pub struct BulletsPlugin;
 
@@ -11,8 +11,8 @@ pub struct Bullet;
 
 impl Plugin for BulletsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, spawn_bullet);
-        app.add_systems(Update, move_bullets);
+        app.add_systems(Update, spawn_bullet.run_if(in_state(GameStates::Game)));
+        app.add_systems(Update, move_bullets.run_if(in_state(GameStates::Game)));
     }
 }
 

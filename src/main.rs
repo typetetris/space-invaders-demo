@@ -23,10 +23,19 @@ mod game;
 mod load_assets;
 mod player;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, States, Default)]
+enum GameStates {
+    #[default]
+    Startup,
+    WaitForGamepad,
+    Splash,
+    Game,
+    End,
+}
+
 fn main() {
     App::new()
-        .add_event::<PlayerShot>()
-        .add_plugins((
+        .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
@@ -42,6 +51,10 @@ fn main() {
                     ..Default::default()
                 })
                 .set(ImagePlugin::default_nearest()),
+        )
+        .init_state::<GameStates>()
+        .add_event::<PlayerShot>()
+        .add_plugins((
             LoadAssetsPlugin,
             GamePlugin,
             AlienPlugin,
