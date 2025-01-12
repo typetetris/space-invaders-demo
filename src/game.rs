@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::{DISPLAY_HEIGHT, WORLD_HEIGHT};
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
@@ -9,5 +11,7 @@ impl Plugin for GamePlugin {
 }
 
 fn setup_scene(mut commands: Commands) {
-    commands.spawn(Camera2d);
+    let mut projection = OrthographicProjection::default_2d();
+    projection.scale = WORLD_HEIGHT / DISPLAY_HEIGHT;
+    commands.spawn((Camera2d, projection));
 }
