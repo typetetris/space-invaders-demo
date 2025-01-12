@@ -5,7 +5,11 @@ use crate::{game::OnGameScreen, load_assets, GameStates, PADDING, WORLD_HEIGHT, 
 pub struct PlayerPlugin;
 
 const PLAYER_MAX_SPEED: f32 = 128f32;
-pub const PLAYER_HEIGHT: f32 = 9f32;
+const PLAYER_IMAGE_HEIGHT: f32 = 256f32;
+const PLAYER_IMAGE_WIDTH: f32 = 208f32;
+
+pub const PLAYER_HEIGHT: f32 = 16f32;
+pub const PLAYER_WIDTH: f32 = PLAYER_IMAGE_WIDTH * PLAYER_HEIGHT / PLAYER_IMAGE_HEIGHT;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
@@ -31,6 +35,7 @@ fn setup_player(mut cmd: Commands, assets: Res<load_assets::Assets>) {
         Transform::from_xyz(0.0, -WORLD_HEIGHT / 2.0 + PADDING, 20.0),
         Sprite {
             image: player_sprite,
+            custom_size: Some(Vec2::new(PLAYER_WIDTH, PLAYER_HEIGHT)),
             ..Default::default()
         },
     ));
