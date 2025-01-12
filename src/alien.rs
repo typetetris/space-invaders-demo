@@ -8,7 +8,7 @@ pub const ALIEN_HEIGHT: f32 = 9f32;
 const ALIEN_WIDTH: f32 = 9f32;
 const ALIEN_GAP: f32 = 5f32;
 const ALIEN_DOWN_TRAVEL_DISTANCE: f32 = ALIEN_HEIGHT + ALIEN_GAP;
-const ALIEN_SPEED: f32 = 64f32;
+const ALIEN_SPEED: f32 = 96f32;
 
 pub struct AlienPlugin;
 
