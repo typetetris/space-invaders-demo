@@ -15,12 +15,10 @@ pub struct SplashScreenPlugin;
 impl Plugin for SplashScreenPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameStates::Splash), setup_splash)
-            .add_systems(Update, update_splash.run_if(in_state(GameStates::Splash)))
             .add_systems(
                 OnExit(GameStates::Splash),
                 super::despawn_component_type::<OnSplashScreen>,
             )
-            .add_systems(OnExit(GameStates::Splash), cleanup_splash_timer)
             .add_systems(
                 Update,
                 start_game_on_button_press.run_if(in_state(GameStates::Splash)),
@@ -28,16 +26,8 @@ impl Plugin for SplashScreenPlugin {
     }
 }
 
-pub(crate) const WAITING_TIME: u32 = 5;
-
 #[derive(Component)]
 pub(crate) struct OnSplashScreen;
-
-#[derive(Resource)]
-pub(crate) struct SplashTimer(Timer);
-
-#[derive(Component)]
-pub(crate) struct UpdateableSplashText;
 
 pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) {
     cmd.spawn((
@@ -64,20 +54,6 @@ pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) 
             ImageNode::new(assets.keyboard.clone()),
             Node {
                 width: Val::Px(350.0),
-                ..default()
-            },
-        ));
-        parent.spawn((
-            UpdateableSplashText,
-            Text::new(format!("Start in {} Sekunden!", WAITING_TIME)),
-            TextColor(TEXT_COLOR),
-            TextFont {
-                font: assets.orbitron_font.clone(),
-                font_size: 32.0,
-                ..default()
-            },
-            Node {
-                margin: UiRect::all(Val::Px(20.0)),
                 ..default()
             },
         ));
@@ -111,7 +87,7 @@ pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) 
                 ));
             });
         parent.spawn((
-            Text::new("Oder drück den Schießenknopf."),
+            Text::new("Weiter mit dem Knopf zum Schießen!"),
             TextColor(TEXT_COLOR),
             TextFont {
                 font: assets.orbitron_font.clone(),
@@ -124,27 +100,4 @@ pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) 
             },
         ));
     });
-    cmd.insert_resource(SplashTimer(Timer::from_seconds(
-        WAITING_TIME as f32,
-        TimerMode::Once,
-    )));
-}
-
-pub(crate) fn update_splash(
-    mut timer: ResMut<SplashTimer>,
-    time: Res<Time>,
-    splash_text: Single<Entity, (With<UpdateableSplashText>, With<Text>)>,
-    mut writer: TextUiWriter,
-    mut game_state: ResMut<NextState<GameStates>>,
-) {
-    if timer.0.tick(time.delta()).finished() {
-        game_state.set(GameStates::Game);
-    } else {
-        let seconds_left = (timer.0.remaining_secs().ceil() as isize).max(0);
-        *writer.text(*splash_text, 0) = format!("Start in {} Sekunden!", seconds_left);
-    }
-}
-
-fn cleanup_splash_timer(mut cmd: Commands) {
-    cmd.remove_resource::<SplashTimer>();
 }
