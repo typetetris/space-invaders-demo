@@ -4,6 +4,7 @@ pub struct LoadAssetsPlugin;
 
 #[derive(Resource)]
 pub struct Assets {
+    pub orbitron_font: Handle<Font>,
     pub alien: Handle<Image>,
     pub alien_damaged: Handle<Image>,
     pub bullet: Handle<Image>,
@@ -25,6 +26,7 @@ fn load_assets(asset_server: Res<AssetServer>, mut cmd: Commands) {
     let alien_damaged = asset_server.load("alien_damaged.png");
     let bullet = asset_server.load("bullet.png");
     let player = asset_server.load("player.png");
+    let orbitron_font = asset_server.load("fonts/static/Orbitron-Medium.ttf");
 
     let bullet_sound = asset_server.load("sounds/PhaserShoot.ogg");
     let game_over_sound = asset_server.load("sounds/GameOverSound.ogg");
@@ -38,6 +40,7 @@ fn load_assets(asset_server: Res<AssetServer>, mut cmd: Commands) {
         bullet_sound,
         game_over_sound,
         win_sound,
+        orbitron_font,
     };
 
     cmd.insert_resource(assets);
