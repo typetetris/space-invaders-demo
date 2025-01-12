@@ -8,6 +8,7 @@ pub struct LoadAssetsPlugin;
 pub struct Assets {
     pub orbitron_font: Handle<Font>,
     pub gamepad: Handle<Image>,
+    pub keyboard: Handle<Image>,
 
     pub alien: Handle<Image>,
     pub alien_damaged: Handle<Image>,
@@ -37,6 +38,7 @@ fn load_assets(
     let bullet = asset_server.load("bullet.png");
     let player = asset_server.load("player.png");
     let gamepad = asset_server.load("gamepad.png");
+    let keyboard = asset_server.load("keyboard.png");
     let orbitron_font = asset_server.load("fonts/static/Orbitron-Medium.ttf");
 
     let bullet_sound = asset_server.load("sounds/PhaserShoot.ogg");
@@ -45,6 +47,7 @@ fn load_assets(
 
     let assets = Assets {
         gamepad,
+        keyboard,
         alien,
         alien_damaged,
         bullet,
