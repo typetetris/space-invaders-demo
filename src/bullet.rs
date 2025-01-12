@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{load_assets, player::PlayerShot, GameStates, WORLD_HEIGHT};
+use crate::{game::OnGameScreen, load_assets, player::PlayerShot, GameStates, WORLD_HEIGHT};
 
 pub struct BulletsPlugin;
 
@@ -30,6 +30,7 @@ fn spawn_bullet(
         let bullet_graphics = assets.bullet.clone();
         cmd.spawn((
             Bullet,
+            OnGameScreen,
             Transform::from_xyz(shot_event.x, shot_event.y, 20.0),
             Sprite {
                 image: bullet_graphics,

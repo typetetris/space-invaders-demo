@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::game::OnGameScreen;
 use crate::load_assets::Assets;
 use crate::{GameStates, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
 
@@ -54,6 +55,7 @@ fn setup_aliens(mut commands: Commands, assets: Res<Assets>) {
             let col = col as f32;
             commands.spawn((
                 Alien,
+                OnGameScreen,
                 Sprite {
                     image: alien_texture.clone(),
                     ..Default::default()
@@ -66,8 +68,9 @@ fn setup_aliens(mut commands: Commands, assets: Res<Assets>) {
             ));
         }
     }
-    commands.spawn(AlienMovementDirection::Horizontal(
-        AlienHorizontalMovementDirection::Right,
+    commands.spawn((
+        AlienMovementDirection::Horizontal(AlienHorizontalMovementDirection::Right),
+        OnGameScreen,
     ));
 }
 
