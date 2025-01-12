@@ -17,6 +17,8 @@ pub struct Assets {
     pub bullet_sound: Handle<AudioSource>,
     pub game_over_sound: Handle<AudioSource>,
     pub win_sound: Handle<AudioSource>,
+
+    pub destruction_sound: [Handle<AudioSource>; 5],
 }
 
 impl Plugin for LoadAssetsPlugin {
@@ -51,6 +53,13 @@ fn load_assets(
         game_over_sound,
         win_sound,
         orbitron_font,
+        destruction_sound: [
+            asset_server.load("sounds/DestructionSound1.ogg"),
+            asset_server.load("sounds/DestructionSound2.ogg"),
+            asset_server.load("sounds/DestructionSound3.ogg"),
+            asset_server.load("sounds/DestructionSound4.ogg"),
+            asset_server.load("sounds/DestructionSound5.ogg"),
+        ],
     };
 
     cmd.insert_resource(assets);

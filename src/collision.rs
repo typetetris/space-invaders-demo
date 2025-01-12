@@ -1,8 +1,10 @@
 use bevy::prelude::*;
+use rand::Rng;
 
 use crate::alien::Alien;
 use crate::bullet::Bullet;
-use crate::GameStates;
+use crate::game::OnGameScreen;
+use crate::{load_assets, GameStates};
 
 pub struct CollisionPlugin;
 
@@ -17,6 +19,7 @@ impl Plugin for CollisionPlugin {
 fn detect_collision(
     bullets: Query<(Entity, &Transform), With<Bullet>>,
     mut aliens: Query<(Entity, &Transform), With<Alien>>,
+    assets: Res<load_assets::Assets>,
     mut cmd: Commands,
 ) {
     for (bullet, bullet_transform) in &bullets {
@@ -28,6 +31,14 @@ fn detect_collision(
             {
                 cmd.entity(bullet).despawn();
                 cmd.entity(alien).despawn();
+
+                let sound_index = rand::thread_rng().gen_range(0..10);
+                if sound_index < 5 {
+                    cmd.spawn((
+                        OnGameScreen,
+                        AudioPlayer::new(assets.destruction_sound[sound_index].clone()),
+                    ));
+                }
             }
         }
     }
