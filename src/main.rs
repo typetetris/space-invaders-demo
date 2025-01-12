@@ -61,9 +61,9 @@ fn main() {
         .add_event::<PlayerShot>()
         .add_plugins((
             LoadAssetsPlugin,
+            GamepadWaitPlugin,
             SplashScreenPlugin,
             GamePlugin,
-            GamepadWaitPlugin,
             AlienPlugin,
             PlayerPlugin,
             BulletsPlugin,
