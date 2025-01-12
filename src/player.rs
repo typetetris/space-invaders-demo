@@ -54,7 +54,6 @@ fn move_player(
                 0.0
             };
 
-            info!("gamepad left stick x {left_stick_x:1.2} mapped value {reading:1.2}");
             player.translation.x += reading * PLAYER_MAX_SPEED * time.delta().as_secs_f32();
         }
         if gamepad.just_pressed(GamepadButton::South) {
