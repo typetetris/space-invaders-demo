@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.15.0"
+blake3 = { version = "1.5.5", features = ["pure"] }
 rand = "0.8.5"
 
 [profile.dev]

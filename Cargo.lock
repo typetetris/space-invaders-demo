@@ -3629,6 +3629,7 @@ name = "space-invaders-demo"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "blake3",
  "rand",
 ]
 
