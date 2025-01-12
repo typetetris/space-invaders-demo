@@ -11,7 +11,7 @@ pub struct Assets {
     pub keyboard: Handle<Image>,
 
     pub alien: Handle<Image>,
-    pub alien_damaged: Handle<Image>,
+    pub _alien_damaged: Handle<Image>,
     pub bullet: Handle<Image>,
     pub player: Handle<Image>,
 
@@ -49,7 +49,7 @@ fn load_assets(
         gamepad,
         keyboard,
         alien,
-        alien_damaged,
+        _alien_damaged: alien_damaged,
         bullet,
         player,
         bullet_sound,
