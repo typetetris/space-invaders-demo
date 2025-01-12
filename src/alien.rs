@@ -2,9 +2,9 @@ use bevy::prelude::*;
 
 use crate::game::OnGameScreen;
 use crate::load_assets::Assets;
-use crate::{GameStates, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
+use crate::{GameStates, WORLD_HEIGHT, WORLD_WIDTH};
 
-const ALIEN_HEIGHT: f32 = 9f32;
+pub const ALIEN_HEIGHT: f32 = 9f32;
 const ALIEN_WIDTH: f32 = 9f32;
 const ALIEN_GAP: f32 = 5f32;
 const ALIEN_DOWN_TRAVEL_DISTANCE: f32 = ALIEN_HEIGHT + ALIEN_GAP;
@@ -37,7 +37,6 @@ enum AlienMovementDirection {
         distance_left_to_travel: f32,
         next: AlienHorizontalMovementDirection,
     },
-    Stopped,
 }
 
 impl Plugin for AlienPlugin {
@@ -113,16 +112,10 @@ fn move_aliens(
             ref distance_left_to_travel,
             ref next,
         } => {
-            let mut aliens_reached_bottom = false;
             for mut trans in &mut aliens {
                 trans.translation.y -= delta;
-                if trans.translation.y <= -WORLD_HEIGHT / 2.0 + ALIEN_GAP + PADDING {
-                    aliens_reached_bottom = true;
-                }
             }
-            if aliens_reached_bottom {
-                AlienMovementDirection::Stopped
-            } else if distance_left_to_travel - delta <= 0.0 {
+            if distance_left_to_travel - delta <= 0.0 {
                 AlienMovementDirection::Horizontal(*next)
             } else {
                 AlienMovementDirection::Down {
@@ -131,7 +124,6 @@ fn move_aliens(
                 }
             }
         }
-        AlienMovementDirection::Stopped => AlienMovementDirection::Stopped,
     };
     *alien_movement_direction = next_movement_direction;
 }

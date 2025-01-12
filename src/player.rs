@@ -5,7 +5,7 @@ use crate::{game::OnGameScreen, load_assets, GameStates, PADDING, WORLD_HEIGHT, 
 pub struct PlayerPlugin;
 
 const PLAYER_MAX_SPEED: f32 = 128f32;
-const PLAYER_HEIGHT: f32 = 9f32;
+pub const PLAYER_HEIGHT: f32 = 9f32;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {

@@ -2,7 +2,7 @@ use alien::AlienPlugin;
 use bevy::prelude::*;
 use bullet::BulletsPlugin;
 use collision::CollisionPlugin;
-use detect_win::DetectWinPlugin;
+use detect_win_or_loss::DetectWinOrLossPlugin;
 use game::GamePlugin;
 use gamepad_wait::GamepadWaitPlugin;
 use load_assets::LoadAssetsPlugin;
@@ -20,7 +20,7 @@ const WORLD_HEIGHT: f32 = 256f32;
 mod alien;
 mod bullet;
 mod collision;
-mod detect_win;
+mod detect_win_or_loss;
 mod game;
 mod gamepad_wait;
 mod load_assets;
@@ -70,7 +70,7 @@ fn main() {
             CollisionPlugin,
             // FrameTimeDiagnosticsPlugin,
             // LogDiagnosticsPlugin::default(),
-            DetectWinPlugin,
+            DetectWinOrLossPlugin,
         ))
         .run();
 }
