@@ -94,10 +94,6 @@ pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) 
                 font_size: 16.0,
                 ..default()
             },
-            Node {
-                margin: UiRect::all(Val::Px(20.0)),
-                ..default()
-            },
         ));
     });
 }
