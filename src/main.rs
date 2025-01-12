@@ -7,6 +7,7 @@ use game::GamePlugin;
 use gamepad_wait::GamepadWaitPlugin;
 use load_assets::LoadAssetsPlugin;
 use player::{PlayerPlugin, PlayerShot};
+use splash::SplashScreenPlugin;
 
 const PADDING: f32 = 32f32;
 
@@ -24,6 +25,8 @@ mod game;
 mod gamepad_wait;
 mod load_assets;
 mod player;
+mod splash;
+mod start_game_on_button_press;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, States, Default)]
 enum GameStates {
@@ -58,6 +61,7 @@ fn main() {
         .add_event::<PlayerShot>()
         .add_plugins((
             LoadAssetsPlugin,
+            SplashScreenPlugin,
             GamePlugin,
             GamepadWaitPlugin,
             AlienPlugin,
