@@ -10,8 +10,11 @@ impl Plugin for AlienPlugin {
 
 fn setup_aliens(mut commands: Commands, asset_server: Res<AssetServer>) {
     let alien_texture = asset_server.load("alien.png");
-    commands.spawn(Sprite {
-        image: alien_texture,
-        ..Default::default()
-    });
+    commands.spawn((
+        Sprite {
+            image: alien_texture,
+            ..Default::default()
+        },
+        Transform::from_xyz(-50.0, -50.0, 20.0).with_scale(Vec3::splat(8.0)),
+    ));
 }
