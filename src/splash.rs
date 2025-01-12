@@ -46,7 +46,7 @@ pub(crate) fn setup_splash(mut cmd: Commands, assets: Res<load_assets::Assets>) 
         parent.spawn((
             ImageNode::new(assets.gamepad.clone()),
             Node {
-                width: Val::Px(350.0),
+                width: Val::Px(175.0),
                 ..default()
             },
         ));
