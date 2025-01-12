@@ -74,7 +74,7 @@ fn detect_win_or_loss(
     }
     for (_, transform) in &aliens {
         if transform.translation.y
-            <= -WORLD_HEIGHT / 2.0 + ALIEN_HEIGHT / 2.0 + PLAYER_HEIGHT + PADDING
+            <= -WORLD_HEIGHT / 2.0 + ALIEN_HEIGHT / 2.0 + PLAYER_HEIGHT / 2.0 + PADDING
         {
             game_state.set(GameStates::End);
             cmd.insert_resource(EndState {
