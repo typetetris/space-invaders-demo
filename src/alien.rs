@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::load_assets::Assets;
 use crate::{PADDING, WORLD_HEIGHT, WORLD_WIDTH};
 
 const ALIEN_HEIGHT: f32 = 9f32;
@@ -45,8 +46,8 @@ impl Plugin for AlienPlugin {
     }
 }
 
-fn setup_aliens(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let alien_texture = asset_server.load("alien.png");
+fn setup_aliens(mut commands: Commands, assets: Res<Assets>) {
+    let alien_texture = &assets.alien;
     for row in 0..3 {
         let row = row as f32;
         for col in 0..8 {

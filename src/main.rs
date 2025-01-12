@@ -2,7 +2,9 @@ use alien::AlienPlugin;
 use bevy::prelude::*;
 use bullet::BulletsPlugin;
 use collision::CollisionPlugin;
+use detect_win::DetectWinPlugin;
 use game::GamePlugin;
+use load_assets::LoadAssetsPlugin;
 use player::{PlayerPlugin, PlayerShot};
 
 const PADDING: f32 = 32f32;
@@ -16,7 +18,9 @@ const WORLD_HEIGHT: f32 = 256f32;
 mod alien;
 mod bullet;
 mod collision;
+mod detect_win;
 mod game;
+mod load_assets;
 mod player;
 
 fn main() {
@@ -38,6 +42,7 @@ fn main() {
                     ..Default::default()
                 })
                 .set(ImagePlugin::default_nearest()),
+            LoadAssetsPlugin,
             GamePlugin,
             AlienPlugin,
             PlayerPlugin,
@@ -45,6 +50,7 @@ fn main() {
             CollisionPlugin,
             // FrameTimeDiagnosticsPlugin,
             // LogDiagnosticsPlugin::default(),
+            DetectWinPlugin,
         ))
         .run();
 }

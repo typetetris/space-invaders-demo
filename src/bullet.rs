@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{player::PlayerShot, WORLD_HEIGHT};
+use crate::{load_assets, player::PlayerShot, WORLD_HEIGHT};
 
 pub struct BulletsPlugin;
 
@@ -19,14 +19,15 @@ impl Plugin for BulletsPlugin {
 fn spawn_bullet(
     mut player_shot_event_reader: EventReader<PlayerShot>,
     mut cmd: Commands,
-    asset_server: Res<AssetServer>,
+    assets: Res<load_assets::Assets>,
 ) {
     let mut shot_event = None;
     for event in player_shot_event_reader.read() {
         shot_event = Some(event);
     }
     if let Some(shot_event) = shot_event {
-        let bullet_graphics = asset_server.load("bullet.png");
+        let bullet_sound = assets.bullet_sound.clone();
+        let bullet_graphics = assets.bullet.clone();
         cmd.spawn((
             Bullet,
             Transform::from_xyz(shot_event.x, shot_event.y, 20.0),
@@ -34,6 +35,7 @@ fn spawn_bullet(
                 image: bullet_graphics,
                 ..Default::default()
             },
+            AudioPlayer::new(bullet_sound),
         ));
     }
 }

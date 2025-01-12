@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{PADDING, WORLD_HEIGHT, WORLD_WIDTH};
+use crate::{load_assets, PADDING, WORLD_HEIGHT, WORLD_WIDTH};
 
 pub struct PlayerPlugin;
 
@@ -23,8 +23,8 @@ pub struct PlayerShot {
     pub y: f32,
 }
 
-fn setup_player(mut cmd: Commands, asset_server: Res<AssetServer>) {
-    let player_sprite = asset_server.load("player.png");
+fn setup_player(mut cmd: Commands, assets: Res<load_assets::Assets>) {
+    let player_sprite = assets.player.clone();
     cmd.spawn((
         Player,
         Transform::from_xyz(0.0, -WORLD_HEIGHT / 2.0 + PADDING, 20.0),
