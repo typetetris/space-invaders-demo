@@ -46,6 +46,7 @@ fn move_player(
     player: Single<&mut Transform, With<Player>>,
     time: Res<Time>,
     mut player_shot_event_writer: EventWriter<PlayerShot>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     let player = &mut *player.into_inner();
     for (_entity, gamepad) in &gamepads {
@@ -69,6 +70,18 @@ fn move_player(
             });
         }
     }
+    if keyboard_input.pressed(KeyCode::ArrowLeft) {
+        player.translation.x -= PLAYER_MAX_SPEED * time.delta().as_secs_f32();
+    }
+    if keyboard_input.pressed(KeyCode::ArrowRight) {
+        player.translation.x += PLAYER_MAX_SPEED * time.delta().as_secs_f32();
+    }
     player.translation.x = player.translation.x.max(-WORLD_WIDTH / 2.0);
     player.translation.x = player.translation.x.min(WORLD_WIDTH / 2.0);
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        player_shot_event_writer.send(PlayerShot {
+            x: player.translation.x,
+            y: -WORLD_HEIGHT / 2.0 + PADDING + PLAYER_HEIGHT / 2.0,
+        });
+    }
 }
