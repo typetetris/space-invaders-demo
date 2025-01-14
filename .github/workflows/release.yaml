@@ -14,6 +14,7 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   use_git_lfs: false
+  OWNER: Eric Wolf
 
 
 jobs:
@@ -51,7 +52,7 @@ jobs:
           zip --recurse-paths ../${{ env.binary }}.zip .
 
       - name: Upload binaries to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ env.binary }}.zip
           name: linux
@@ -97,7 +98,7 @@ jobs:
           Compress-Archive -Path windows/* -DestinationPath ${{ env.binary }}.zip
 
       - name: Upload binaries to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ env.binary }}.zip
           name: windows
@@ -114,7 +115,7 @@ jobs:
           overwrite: true
 
   # Build for MacOS x86_64
-  release-macOS-intel:
+  release-macOS:
     runs-on: macOS-latest
 
     steps:
@@ -125,74 +126,67 @@ jobs:
           lfs: ${{ env.use_git_lfs }}
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
       - name: Environment Setup
         run: |
           export CFLAGS="-fno-stack-check"
-          export MACOSX_DEPLOYMENT_TARGET="10.9"
+          export MACOSX_DEPLOYMENT_TARGET="11.0"
 
-      - name: Build
+      - name: Build for Apple x86_64
         run: |
           cargo build --release --target x86_64-apple-darwin
 
-      - name: Prepare Package
-        run: |
-          mkdir -p ${{ env.binary }}.app/Contents/MacOS
-          cp target/x86_64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
-          cp -r assets ${{ env.binary }}.app/Contents/MacOS/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
-          hdiutil create -fs HFS+ -volname "${{ env.binary }}" -srcfolder ${{ env.binary }}.app ${{ env.binary }}-macOS-intel.dmg
-
-      - name: Upload binaries to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          path: ${{ env.binary }}-macOS-intel.dmg
-          name: macOS-intel
-          retention-days: 1
-
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file:  ${{ env.binary }}-macOS-intel.dmg
-          asset_name: ${{ env.binary }}-macOS-intel-${{ steps.get_version.outputs.tag }}.dmg
-          tag: ${{ github.ref }}
-          overwrite: true
-
-  # Build for MacOS Apple Silicon
-  release-macOS-apple-silicon:
-    runs-on: macOS-latest
-
-    steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-darwin
-      - name: Environment 
-        # macOS 11 was the first version to support ARM
-        run: |
-          export MACOSX_DEPLOYMENT_TARGET="11"
-
-      - name: Build
+      - name: Build for Apple Silicon
         run: |
           cargo build --release --target aarch64-apple-darwin
 
+      - name: Create Universal Binary
+        run: |
+          lipo -create -output "target/release/${{ env.binary }}" "target/aarch64-apple-darwin/release/${{ env.binary }}" "target/x86_64-apple-darwin/release/${{ env.binary }}"
+
       - name: Prepare Package
         run: |
-          mkdir -p ${{ env.binary }}.app/Contents/MacOS
-          cp target/aarch64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
-          cp -r assets ${{ env.binary }}.app/Contents/MacOS/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
-          hdiutil create -fs HFS+ -volname "${{ env.binary }}-macOS-apple-silicon" -srcfolder ${{ env.binary }}.app ${{ env.binary }}-macOS-apple-silicon.dmg
+          mkdir -p build/${{ env.binary }}.app/Contents/MacOS
+          cat > "build/${{ env.binary }}.app/Contents/Info.plist" << EOF
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+                <dict>
+                    <key>CFBundleDevelopmentRegion</key>
+                    <string>en</string>
+                    <key>CFBundleDisplayName</key>
+                    <string>${{ env.binary }}</string>
+                    <key>CFBundleExecutable</key>
+                    <string>${{ env.binary }}</string>
+                    <key>CFBundleIdentifier</key>
+                    <string>${{ env.OWNER }}.${{ env.binary }}</string>
+                    <key>CFBundleName</key>
+                    <string>${{ env.binary }}</string>
+                    <key>CFBundleShortVersionString</key>
+                    <string>${{ github.ref }}</string>
+                    <key>CFBundleVersion</key>
+                    <string>${{ github.ref }}</string>
+                    <key>CFBundleInfoDictionaryVersion</key>
+                    <string>6.0</string>
+                    <key>CFBundlePackageType</key>
+                    <string>APPL</string>
+                    <key>CFBundleSupportedPlatforms</key>
+                    <array>
+                        <string>MacOSX</string>
+                    </array>
+                </dict>
+            </plist>
+          EOF
+          cp -r assets build/${{ env.binary }}.app/Contents/MacOS/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
+          cp target/release/${{ env.binary }} build/${{ env.binary }}.app/Contents/MacOS/
+          ln -s /Applications build/
+          hdiutil create -fs HFS+ -volname "${{ env.binary }}" -srcfolder build "build/${{ env.binary }}.dmg"
 
       - name: Upload binaries to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: ${{ env.binary }}-macOS-apple-silicon.dmg
-          name: macOS-apple-silicon
+          path: build/${{ env.binary }}.dmg
+          name: macOS
           retention-days: 1
 
       - name: Upload binaries to release
@@ -200,8 +194,9 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}-macOS-apple-silicon.dmg
-          asset_name: ${{ env.binary }}-macOS-apple-silicon-${{ steps.get_version.outputs.tag }}.dmg
+          file:  build/${{ env.binary }}.dmg
+          asset_name: ${{ env.binary }}-macOS-${{ steps.get_version.outputs.tag }}.dmg
+          release_name: ${{ gihub.ref }}
           tag: ${{ github.ref }}
           overwrite: true
 
@@ -224,8 +219,7 @@ jobs:
       - check-if-upload-to-itch-is-configured
       - release-linux
       - release-windows
-      - release-macOS-intel
-      - release-macOS-apple-silicon
+      - release-macOS
     if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
 
     steps:
