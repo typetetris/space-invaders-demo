@@ -196,7 +196,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file:  build/${{ env.binary }}.dmg
           asset_name: ${{ env.binary }}-macOS-${{ steps.get_version.outputs.tag }}.dmg
-          release_name: ${{ github.ref }}
           tag: ${{ github.ref }}
           overwrite: true
 
